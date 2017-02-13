@@ -15,7 +15,7 @@
 
 # find the id of the bike with the most rides
 
-# count the number of riders by gender and birth year
+# count the number of rides by gender and birth year
 
 # count the number of trips that start on cross streets that both contain numbers (e.g., "1 Ave & E 15 St", "E 39 St & 2 Ave", ...)
 
