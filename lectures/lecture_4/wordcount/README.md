@@ -4,9 +4,10 @@ implemented in hadoop streaming using a simple wrapper class
 
 To run locally:
 
-   ./run_wordcount
+    ./run_wordcount.sh
 
 To run with Hadoop:
 
-   ./run_wordcount -h
+    ./run_wordcount.sh -h
 
+You can also see the mapper and reducer individually  with `wordcount.py -m` and `wordcount.py -r`, respectively.
