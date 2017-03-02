@@ -1,0 +1,145 @@
+---
+title: "Fitting with Gradient"
+author: "Jongbin Jung"
+date: "November 14, 2016"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+<link rel="stylesheet" href="http://vis.supstat.com/assets/themes/dinky/css/scianimator.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="http://vis.supstat.com/assets/themes/dinky/js/jquery.scianimator.min.js"></script>
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(cowplot)
+library(animation)
+library(gganimate)
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(animation.fun = knitr::hook_scianimator)
+
+theme_set(theme_bw())
+```
+
+# Example with Linear Regression
+
+## Setup
+
+We want to fit a line ($y = ax + b$) to some data, for example
+
+```{r generate data}
+a <- runif(1) + 0.5
+b <- runif(1) + 2
+example_data <- tibble(x=runif(100, 0, 10), e=rnorm(100)) %>%
+  mutate(y=a*x+b+e)
+ggplot(example_data, aes(x=x, y=y)) +
+  geom_point() +
+  scale_y_continuous(limits = c(0, 15)) +
+  scale_x_continuous(limits = c(0, 10))
+```
+
+Given data $x$ and $y$, for estimated values $\hat{a}, \hat{b}$, define the 
+loss function
+
+$$l(a,b) = \frac{1}{N}\sum_i^N(y_i-(\hat{a}x_i+\hat{b}))^2$$
+
+```{r loss function}
+mse <- function(y, x, a, b) {
+  mean((y - (a*x + b))^2)
+}
+```
+
+## Gradient Descent
+
+Partial derivatives for each parameter $a, b$ are calculated: 
+
+$$ \frac{\partial}{\partial a} = \frac{2}{N}\sum_i^N-x_i(y_i-(ax_i+b)) $$
+$$ \frac{\partial}{\partial b} = \frac{2}{N}\sum_i^N-(y_i-(ax_i+b)) $$
+
+and a single iteration, given starting points for $a, b$, the data, and learning
+rate can be written:
+
+```{r function: gradient step}
+step_gradient <- function(a_now, b_now, data, rate) {
+  a_grad <- 2 * mean(-data$x * (data$y - (a_now * data$x + b_now)))
+  b_grad <- 2 * mean(-(data$y - (a_now * data$x + b_now)))
+  a_new <- a_now - (rate * a_grad)
+  b_new <- b_now - (rate * b_grad)
+  return(tibble(a=a_new, b=b_new))
+}
+```
+
+Now, we can take multiple iterations.
+
+```{r generate iterations}
+coefs <- tibble(a=0, b=0)
+rate <- 0.01
+MAX_ITER <- 500
+for (i in 1:MAX_ITER) {
+  now <- coefs %>%
+    tail(1)
+  
+  coefs <- bind_rows(coefs, step_gradient(now$a, now$b, example_data, rate))
+}
+```
+
+For brevity, let's just take a sample of all iterations
+
+```{r sampling iters}
+sample_coefs <- coefs %>%
+  mutate(iter=1, original_iter=cumsum(iter)) %>%
+  slice(c(1:4, seq(5, MAX_ITER, MAX_ITER/50), MAX_ITER)) %>%
+  rowwise() %>%
+  mutate(loss=mse(example_data$y, example_data$x, a, b)) %>%
+  ungroup() %>%
+  mutate(iter=cumsum(iter))
+```
+
+## Line fit and changes in loss
+
+```{r animated_alt, echo=FALSE, fig.show="animate", message=FALSE, warning=FALSE}
+xlb <- -1   #min(sample_coefs$b) - 0.2
+xub <- 3    #max(sample_coefs$b) + 0.2
+ylb <- -1   #min(sample_coefs$a) - 0.2
+yub <- 3  #max(sample_coefs$a) + 0.2
+
+models <- expand.grid(a = seq(ylb, yub, .1),
+                      b = seq(xlb, xub, .1)) %>%
+  rowwise() %>%
+  mutate(mse = mse(example_data$y, example_data$x, a, b)) %>%
+  ungroup()
+
+models$loss <- models[["mse"]]
+min_mse <- filter(models, mse == min(mse))
+min_loss <- filter(models, loss == min(loss))
+
+plts <- lapply(sample_coefs$iter, function(i) {
+  frame_coefs <- sample_coefs %>%
+    filter(iter == i)
+  cum_coefs <- sample_coefs %>%
+    filter(iter <= i)
+  
+  points <-  ggplot(example_data, aes(x=x, y=y)) +
+    geom_point() +
+    geom_abline(slope=a, intercept=b, linetype="dashed") +
+    geom_abline(data=frame_coefs, aes(slope=a, intercept=b), color='red') +
+    labs(title='Line fit') +
+    theme(plot.title = element_text(hjust=0.5)) +
+    scale_x_continuous(limits = c(0, 10)) +
+    scale_y_continuous(limits = c(0, 15))
+  
+  loss <- ggplot(data=models, aes(x=b, y=a)) +
+    geom_contour(aes(z=log(loss))) +
+    geom_point(x=b, y=a, color='red', shape=4) +
+    geom_point(data=frame_coefs, aes(x=b, y=a)) +
+    geom_line(data=cum_coefs, aes(x=b, y=a), linetype='dashed') +
+    labs(title='Loss') +
+    theme(plot.title = element_text(hjust=0.5)) +
+    scale_x_continuous(expand=c(0,0)) +
+    scale_y_continuous(expand=c(0,0))
+  
+  print(plot_grid(points, loss))
+})
+```
+
