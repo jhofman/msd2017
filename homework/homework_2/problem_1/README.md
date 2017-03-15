@@ -10,4 +10,4 @@ For each of parts a) through d), indicate whether we would generally expect the 
 
   d) The variance of the error terms, i.e. Var(ε), is extremely high.
 
-Note: This problem was taken From Section 2.4 of [An Introduction to Statistical Learning](http://www-bcf.usc.edu/~gareth/ISL/).
+Note: This problem was taken from Section 2.4 of [An Introduction to Statistical Learning](http://www-bcf.usc.edu/~gareth/ISL/).
