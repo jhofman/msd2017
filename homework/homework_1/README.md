@@ -5,3 +5,4 @@ Your code and a brief report with your results are to be submitted electronicall
 All code should be contained in plain text files and should produce the exact results you provide in your writeup.
 Code should be written in bash / R and should not have complex dependencies on non-standard libraries.
 The report should simply present your answers to the questions in an organized format as either a plain text or pdf file.
+All work should be your own and done individually.
