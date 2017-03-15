@@ -1,6 +1,5 @@
 The first problem looks at cross-validation for polynomial regression.
 The second problem involves fitting and interpreting a model of supermarket sales data.
-The third problem is an open-ended exercise in predicting future usage of NYC's Citibike system.
 Details are in the README.md file for each problem.
 
 Your code and a brief report with your results are to be submitted electronically in one zipped (or tarball-ed) file through the [CourseWorks](https://courseworks2.columbia.edu/courses/sis_course_id:APMAE4990_001_2017_1) site.
