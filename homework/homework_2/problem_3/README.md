@@ -34,3 +34,5 @@ See [here](https://www.rdocumentation.org/packages/bayesm/versions/3.0-2/topics/
 	d) Imagine we wanted to sell this same amount of Tropicana, but were willing to feature it in the store. How much could we charge?
 
 See [this post](http://www.salemmarafi.com/business/price-elasticity/) or [these videos](https://www.khanacademy.org/economics-finance-domain/microeconomics/elasticity-tutorial/price-elasticity-tutorial/v/price-elasticity-of-demand) for some background on elasticity . Also, see [here](http://home.wlu.edu/~gusej/econ398/notes/logRegressions.pdf) for more on log-log transformations in regression.
+
+Note: This problem is adapted from a similar exercise originally written by Justin Rao.
