@@ -1,4 +1,4 @@
-### Interpreting sales data
+### 3. Interpreting sales data
 
 This exercise looks at the relationship between price and sales of different brands of orange juice across various supermarkets.
 

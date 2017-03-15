@@ -1,4 +1,4 @@
-### 1. Cross-validation for polynomial regression
+### 2. Cross-validation for polynomial regression
 
 In this problem you will use cross-validation to determine a best-fit polynomial for the data provided in ``polyfit.tsv``.
 
