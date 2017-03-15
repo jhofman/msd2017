@@ -1,11 +1,13 @@
-### 1. Cross-validation for polynomial regression
+### 1. Modeling scenarios
 
-In this problem you will use cross-validation to determine a best-fit polynomial for the data provided in ``polyfit.tsv``.
+(From Section 2.4 of [An Introduction to Statistical Learning](http://www-bcf.usc.edu/~gareth/ISL/))
 
-Use 5-fold cross-validation to select the polynomial degree with the smallest test error, as measured by RMSE.
-You may use ``lm()`` to fit models along with the ``poly()`` function.
+1. For each of parts a) through d), indicate whether we would generally expect the performance of a flexible statistical learning method to be better or worse than an inflexible method. Justify your answer.
 
-Provide a plot of the training and test error as a function of the polynomial degree, indicating the optimal degree (i.e., the degree with the smallest average test error).
-For this optimal degree, also provide a separate scatter plot of the data with the best-fit model overlayed.
-Report the coefficients for the best-fit model.
+	a) The sample size n is extremely large, and the number of predictors p is small.
 
+	b) The number of predictors p is extremely large, and the number of observations n is small.
+
+	c) The relationship between the predictors and response is highly non-linear.
+
+	d) The variance of the error terms, i.e. Var(ε), is extremely high.
