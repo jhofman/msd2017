@@ -1,0 +1,162 @@
+---
+title: "Networks"
+author: "Jake Hofman"
+date: "April 7, 2017"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+```{r}
+library(igraph)
+library(tidyverse)
+library(scales)
+
+theme_set(theme_bw())
+```
+
+# Toy networks
+
+## Star network
+```{r}
+# look at edge list and adjacency matrix
+star <- graph.star(5, mode="undirected", center=1)
+plot(star)
+get.edgelist(star)
+get.adjacency(star)
+```
+
+## Lattice network
+```{r}
+# look at edge list and adjacency matrix
+grid <- graph.lattice(length=3, dim=2)
+plot(grid)
+get.edgelist(grid)
+get.adjacency(grid)
+```
+
+
+## Ring network
+```{r}
+# look at edge list and adjacency matrix
+grid <- graph.ring(10)
+plot(grid)
+get.edgelist(grid)
+get.adjacency(grid)
+```
+
+### Path length
+```{r}
+# look at all-pairs shortest path distances
+shortest.paths(grid)
+```
+
+## Watts-Strogatz
+Plot a few watts-strogatz small world networks
+
+```{r}
+# mostly a ring
+plot(watts.strogatz.game(1, 100, 5, 0.01), layout=layout.circle, vertex.size=1, vertex.label=NA)
+```
+
+```{r}
+# some rewiring
+plot(watts.strogatz.game(1, 100, 5, 0.05), layout=layout.circle, vertex.size=1, vertex.label=NA)
+```
+
+```{r}
+# lots of rewiring
+plot(watts.strogatz.game(1, 100, 5, 0.10), layout=layout.circle, vertex.size=1, vertex.label=NA)
+```
+
+# Real networks
+
+## Washington DC road network 
+```{r}
+# read in edge list
+dc_edges <- read.table('dc_road_network.tsv', sep="\t", header=F, col.names=c('src','dst'))
+
+# convert to igraph object
+dc_graph <- graph.data.frame(dc_edges, directed=F)
+
+# plot hairball
+plot(dc_graph, vertex.size=1, vertex.label=NA)
+```
+
+### Degree distribution
+```{r}
+# compute degree distribution
+dc_degree_dist <- dc_edges %>%
+  group_by(src) %>%
+  summarize(degree=n()) %>%
+  group_by(degree) %>%
+  summarize(num_nodes=n())
+ggplot(dc_degree_dist, aes(x = degree, y = num_nodes)) +
+  geom_line() + 
+  xlab('Degree') +
+  ylab('Number of nodes')
+```
+
+### Path length
+```{r}
+# plot distribution of path lengths
+count <- path.length.hist(dc_graph)$res
+plot_data <- data.frame(path_length = 1:length(count), count)
+ggplot(plot_data, aes(x = path_length, y = count)) +
+  geom_line() +
+  xlab('Path length') +
+  ylab('Number of routes') +
+  scale_y_continuous(label = comma)
+```
+
+```{r}
+# compute mean path length
+sum(1:length(count)*count)/sum(count)
+```
+
+## Wikipedia voting network 
+```{r}
+# read in edge list
+wiki_edges <- read.table('wiki-Vote.txt', sep="\t", header=F, col.names=c('src','dst'))
+
+wiki_graph <- graph.data.frame(wiki_edges, directed=T)
+```
+
+### Degree distribution
+```{r}
+wiki_degree_dist <- wiki_edges %>%
+  group_by(src) %>%
+  summarize(degree=n()) %>%
+  group_by(degree) %>%
+  summarize(num_nodes=n())
+ggplot(wiki_degree_dist, aes(x = degree, y = num_nodes)) +
+  geom_line() + 
+  xlab('Degree') +
+  ylab('Number of nodes')
+```
+
+```{r}
+ggplot(wiki_degree_dist, aes(x = degree, y = num_nodes)) +
+  geom_point() + 
+  xlab('Degree') +
+  ylab('Number of nodes') +
+  scale_y_log10() +
+  scale_x_log10()
+```
+
+### Path length
+```{r}
+# plot distribution of path lengths
+count <- path.length.hist(wiki_graph)$res
+plot_data <- data.frame(path_length = 1:length(count), count)
+ggplot(plot_data, aes(x = path_length, y = count)) +
+  geom_line() +
+  xlab('Path length') +
+  ylab('Number of routes')
+```
+
+```{r}
+# compute mean path length
+sum(1:length(count)*count)/sum(count)
+```
