@@ -16,13 +16,13 @@ For each such network, compute:
 
 * The number of nodes in the network
 * The number of edges in the network
-* The number of distinct connected components in the network
+* The number of connected components in the network
 * The fraction of nodes contained in the largest connected component of the network
-* The average path length between all pairs of nodes in the network
+* The average distance between all pairs of nodes in the network
 
 Plot each of these five quantities (on the vertical axis) as a function of the thresholds used (on a logarithmic horizontal axis), and comment on the shape of them.
 What's happening to the number of nodes, edges, and components?
-How and why is the average path length changing?
+How and why is the average distance between nodes changing?
 
 You should notice a peak in the number of connected components as a function of the threshold.
 What's happening here?
