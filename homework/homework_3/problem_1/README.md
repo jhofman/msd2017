@@ -10,6 +10,6 @@ Then convert it to a ``sparseMatrix`` (code provided) where each row corresponds
 Next, create an 80% train / 20% test split of the data and use ``cv.glmnet`` to find a best-fit logistic regression model that minimizes misclassification error.
 Provide a plot of the cross-validation curve from ``cv.glmnet``.
 Quote the accuracy, confusion matrix, and AUC on the test data and use the ``ROCR`` package to provide a plot of the ROC curve for the test data.
-Finally, show the words with the top 10 heighest weights for the "business" class, and the same for the "world" class.
+Finally, show the words with the top 10 highest weights for the "business" class, and the same for the "world" class.
 
 See [this vignette](https://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html) for more information on the ``glmnet`` package.
